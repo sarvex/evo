@@ -27,8 +27,8 @@ import random
 random.shuffle(combos)
 
 
-html = open("out/out.html", "w")
-html.write("""
+with open("out/out.html", "w") as html:
+    html.write("""
 <!doctype html>
 <html>
 <head>
@@ -51,12 +51,10 @@ html.write("""
     <th>Best program cycle count</th>
 </tr>
 """)
-html.close()
-
 print("%i combinations" % len(combos))
-count = 0
-for seed, (surv_count, random_surv_count, offspring_count), init_prg_size, cycle_count, mut_chance in combos:
-    count += 1
+plotcmd = "bin/plot log"
+
+for count, (seed, (surv_count, random_surv_count, offspring_count), init_prg_size, cycle_count, mut_chance) in enumerate(combos, start=1):
     args = (
         ('goal', 'tst/hello.stdout'),
         ('generationlimit', '9999'),
@@ -70,9 +68,7 @@ for seed, (surv_count, random_surv_count, offspring_count), init_prg_size, cycle
     )
     argstr = ' '.join(['--%s %s' % arg for arg in args])
 
-    evocmd = "build/debug/evo %s hi >log" % argstr
-    plotcmd = "bin/plot log"
-
+    evocmd = f"build/debug/evo {argstr} hi >log"
     print("%i out of %i" % (count, len(combos)))
     print(evocmd)
     os.system(evocmd)
@@ -80,10 +76,9 @@ for seed, (surv_count, random_surv_count, offspring_count), init_prg_size, cycle
     os.system(plotcmd)
 
 
-html = open("out/out.html", "a")
-html.write("""
+with open("out/out.html", "a") as html:
+    html.write("""
 </table>
 </body>
 </html>
 """)
-html.close()

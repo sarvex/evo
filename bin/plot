@@ -65,15 +65,15 @@ size.legend(legend_list, 'best')
 if show:
     plot.show()
 else:
-    pngfile = "%s.png" % first_line.strip()
-    plot.savefig("out/%s" % pngfile)
+    pngfile = f"{first_line.strip()}.png"
+    plot.savefig(f"out/{pngfile}")
 
     context = dict_for_line(first_line)
     context['pngfile'] = pngfile
     context.update(best)
 
-    html = open("out/out.html", "a")
-    html.write("""
+    with open("out/out.html", "a") as html:
+        html.write("""
 <tr>
     <td>%(seed)s</td>
     <td>%(surv_count)s</td>
@@ -91,4 +91,3 @@ else:
     <td>%(best_cycle_count)s</td>
 </tr>
 """ % context)
-    html.close()
